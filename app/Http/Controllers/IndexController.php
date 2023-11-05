@@ -17,32 +17,39 @@ class IndexController extends Controller
     // top page
     public function index()
     {
-        // ChromeDriverのURL
         $host = 'http://selenium:4444/wd/hub';
 
-        // ChromeOptionsのインスタンスを作成
         $options = new ChromeOptions();
+        $options->addArguments(['--headless', '--no-sandbox', '--disable-dev-shm-usage']);
 
         $capabilities = DesiredCapabilities::chrome();
-        $capabilities->setCapability(ChromeOptions::CAPABILITY_W3C, $options);
+        $capabilities->setCapability(ChromeOptions::CAPABILITY, $options);
 
-        // RemoteWebDriverを起動し、ChromeDriverに接続
         $driver = RemoteWebDriver::create($host, $capabilities);
 
-        // スクレイピングしたいウェブページにアクセス
         $driver->get('https://www.apple.com/jp/shop/refurbished/mac/macbook-pro-64gb');
 
-        // 5秒待機
-        $driver->wait(10);
+        // wait for the page to load
+        $driver->wait()->until(
+            WebDriverExpectedCondition::visibilityOfElementLocated(WebDriverBy::className('rf-refurb-results'))
+        );
 
-        // class="rf-refurb-results"を含む要素を取得して表示
         $elements = $driver->findElements(WebDriverBy::className('rf-refurb-results'));
-        // foreach ($elements as $element) {
-        //     echo $element->getText() . PHP_EOL;
-        // }
-        dd($elements);
 
+        $items = [];
+        foreach ($elements as $element) {
+            // Get the image element
+            $imageElement = $element->findElement(WebDriverBy::tagName('img'));
+            // Get the src attribute of the image
+            $imageUrl = $imageElement->getAttribute('src');
+            // Get the text of the element
+            $text = $element->getText();
+            $items[] = ['imageUrl' => $imageUrl, 'text' => $text];
+        }
 
-        // return view("index");
+        $driver->quit();
+
+        // Pass the items to the view
+        return view('index', ['items' => $items]);
     }
 }

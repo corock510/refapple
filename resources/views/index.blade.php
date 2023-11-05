@@ -51,57 +51,12 @@
 
 
     <!-- 検索結果を表示するエリア -->
-    <div id="searchResults"></div>
-
-    {{-- jQuery読み込み --}}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-    {{-- スクレイピング用のJavaScript --}}
-    <script>
-        $(document).ready(function() {
-            // フォームが送信されたときにAjaxリクエストを送信
-            $("#searchForm").submit(function(event) {
-                event.preventDefault(); // フォームのデフォルトの送信を無効化
-
-                // フォームデータを取得
-                var formData = $("#searchForm").serialize();
-
-                // Ajaxリクエストを送信
-                $.ajax({
-                    type: "GET", // リクエストの種類を選択 (GETまたはPOST)
-                    url: "get", // スクレイピング対象のURL
-                    data: formData, // フォームデータを送信
-                    success: function(data) {
-                        // スクレイピング結果を表示
-                        var $resultElement = $(data).find('.rf-refurb-category-gridpage-results');
-                        $("#searchResults").html($resultElement);
-
-                        // 要素の読み込みを待つ
-                        waitForElementToLoad();
-                    },
-                    error: function() {
-                        // エラーハンドリング
-                        console.log("エラーが発生しました");
-                    }
-                });
-            });
-
-            // 要素の読み込みを待つ関数
-            function waitForElementToLoad() {
-                var targetElement = $("#searchResults .rf-refurb-category-gridpage-results");
-                if (targetElement.length > 0) {
-                    // 要素が読み込まれたら、ここで要素を処理するコードを実行
-
-                    // 例: 要素のテキストを取得
-                    var elementText = targetElement.text();
-                    console.log('要素のテキスト:', elementText);
-                } else {
-                    // 要素がまだ読み込まれていない場合、一定の間隔で再試行
-                    setTimeout(waitForElementToLoad, 1000); // 1秒ごとに再試行
-                }
-            }
-        });
-    </script>
+    <div id="searchResults">
+        @foreach ($items as $item)
+            <img src="{{ $item['imageUrl'] }}" alt="Image">
+            <p>{{ $item['text'] }}</p>
+        @endforeach
+    </div>
 </body>
 
 </html>
