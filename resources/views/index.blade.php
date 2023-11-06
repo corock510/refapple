@@ -13,6 +13,9 @@
 </head>
 
 <body class="antialiased">
+    <div id="app">
+        <my-component></my-component>
+      </div>
     <h1>Refapple</h1>
     <form id="searchForm" action="" method="">
         {{-- Mac、iPhone、iPadを選択するドロップダウン --}}
@@ -57,6 +60,7 @@
             <p>{{ $item['text'] }}</p>
         @endforeach
     </div>
+    <script src="{{ mix('resources/js/app.js') }}" type="module"></script>
 </body>
 
 </html>

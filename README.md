@@ -15,3 +15,8 @@
 ### 起動確認
 - `docker compose ps`
 
+## Vue
+- `npm install`
+- `npm run build`
+- `npm run dev`
+
